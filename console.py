@@ -126,7 +126,7 @@ class HBNBCommand(cmd.Cmd):
         my_object = eval(my_line[0])()
         if my_line[1]:
             for elem in my_line[1:]:
-                key_value = elem.split("=") 
+                key_value = elem.split("=")
                 if hasattr(my_object, key_value[0]):
                     setattr(my_object, key_value[0], eval(
                         key_value[1].replace("_", " ")))
