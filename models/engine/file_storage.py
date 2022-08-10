@@ -1,14 +1,7 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
-from models.base_model import BaseModel
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from models.user import User
-from os import path
+
 
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
@@ -18,12 +11,11 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if cls is not None:
-            keyo = {}
-            for key, val in FileStorage.__objects.items():
-                if type(val) == cls:
-                    keyo[key] = val
-            return keyo
-
+            My_instances = {}
+            for k, v in FileStorage.__objects.items():
+                if type(v) is cls:
+                    My_instances[k] = v
+            return My_instances
         return FileStorage.__objects
 
     def new(self, obj):
@@ -39,20 +31,34 @@ class FileStorage:
                 temp[key] = val.to_dict()
             json.dump(temp, f)
 
-
     def reload(self):
-        """deserializes the JSON file to __objects"""
-        if path.exists(self.__file_path):
-            with open(self.__file_path, mode='r', encoding='utf-8') as AJ:
-                dictionary = json.loads(AJ.read())
-                for key, value in dictionary.items():
-                    self.__objects[key] = eval(value['__class__'])(**value)
+        """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
+        classes = {
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
+        try:
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
 
     def delete(self, obj=None):
         """Adding a new public instance method
-        and delete obj from __objects if it’s inside
-        """
+        and delete obj from __objects if it’s inside"""
         if obj is not None:
-            if obj in FileStorage.__objects.values():
+            if obj in self.__objects.values():
                 keyo = "{}.{}".format(type(obj).__name__, obj.id)
-                del FileStorage.__objects[keyo]
+                del self.__objects[keyo]
