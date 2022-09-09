@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
+import models
 import json
 from models.base_model import BaseModel
 from models.state import State
@@ -56,3 +57,9 @@ class FileStorage:
             if obj in FileStorage.__objects.values():
                 keyo = "{}.{}".format(type(obj).__name__, obj.id)
                 del FileStorage.__objects[keyo]
+
+    def close(self):
+        """method for deserializing the JSON
+        file to objects
+        """
+        models.storage.reload()

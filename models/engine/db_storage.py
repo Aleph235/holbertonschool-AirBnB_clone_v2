@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os
+from os import getenv
 from sqlalchemy import create_engine
 from models.base_model import BaseModel, Base
 from models.user import User
@@ -26,14 +26,25 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session
-        all objects depending of the class name"""
-        if cls is None:
-            for obj in self.__session.query(User, State, City,
-                                            Amenity, Place, Review)
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            obdi[key] = obj
-        return obdi
+    """query on the current database session (self.__session)
+    all objects depending of the class name (argument cls)"""
+    Base.metadata.create_all(self.__engine)
+    self.__session = Session(self.__engine)
+
+        if cls:
+            cls = eval(cls.__name__)
+            my_query = self.__session.query(cls).all()
+        else:
+            my_objs = [User, Place, Review, City, State, Amenity]
+            my_query = []
+            for elem in my_objs:
+                my_query.extend(self.__session.query(elem)).all()
+
+        object_dict = dict()
+        for obj in my_query:
+            object_dict[f"{type(obj).__name__}.{obj.id}"] = obj
+
+        return object_dict
 
     def new(self, obj):
         """add the object to the current database session"""
@@ -51,7 +62,6 @@ class DBStorage:
     def reload(self):
         """create all tables in the database & the current database session"""
         Base.metadata.create_all(self.__engine)
-        Sessio = sessionmaker(binds=self.__engine,
+        sessio = sessionmaker(binds=self.__engine,
                             expire_on_commit=False)
-        Session = scoped_session(sessio)
-        self.__session = sessio()
+        self.__session = scoped_session(sessio)
