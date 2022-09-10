@@ -35,7 +35,7 @@ def Display_Python(text = "is cool"):
 @app.route("/number/<int:n>", strict_slashes=False)
 def Display_Int(n):
     """If not int don't distplay"""
-    return "{} in a number".format(n)
+    return "{} is a number".format(n)
 
 
 @app.route("/number_template/<int:n>", strict_slashes=False)
