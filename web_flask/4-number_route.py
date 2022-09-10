@@ -17,20 +17,21 @@ def HBNB():
 @app.route("/c/<text>", strict_slashes=False)
 def Display_C(text):
     """C return string"""
-    text.replace('_',' ')
-    return f"C {text}"
+    text.replace('_', ' ')
+    return "C {}".format(text)
+
 
 @app.route("/python/")
 @app.route("/python/<text>", strict_slashes=False)
-def Display_Python(text = "is cool"):
+def Display_Python(text="is cool"):
     """Python return string"""
-    text.replace('_',' ')
-    return f"Python {text}"
+    text.replace('_', ' ')
+    return "Python {}".format(text)
 
 @app.route("/number/<int:n>", strict_slashes=False)
 def Display_Int(n):
     """If not int don't distplay"""
-    return f"{n} in a number"
+    return "{} in a number".format(n)
 
-if __name__=='__main__':
+if __name__ == '__main__':
     app.run(host="0.0.0.0")
