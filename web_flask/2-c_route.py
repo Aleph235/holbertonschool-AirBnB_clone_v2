@@ -20,7 +20,7 @@ def HBNB():
 @app.route("/c/<text>", strict_slashes=False)
 def Display_C(text):
     """C return string"""
-    text.replace('_', ' ')
+    text = text.replace('_', ' ')
     return "C {}".format(text)
 
 
