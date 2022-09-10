@@ -22,15 +22,15 @@ def HBNB():
 def Display_C(text):
     """C return string"""
     text = text.replace('_', ' ')
-    return f"C {text}"
+    return "C {}".format(text)
 
 
 @app.route("/python/")
 @app.route("/python/<text>", strict_slashes=False)
-def Display_Python(text = "is cool"):
+def Display_Python(text="is cool"):
     """Python return string"""
     text = text.replace('_', ' ')
-    return f"Python {text}"
+    return "Python {}".format(text)
 
 
 @app.route("/number/<int:n>", strict_slashes=False)
